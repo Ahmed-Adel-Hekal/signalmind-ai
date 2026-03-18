@@ -9,6 +9,7 @@ from intelligence_page import show_live_counter
 
 
 st.title("AI Social Content Factory")
+st.caption("Analyze trends + competitors, then generate publish-ready ideas.")
 
 with st.sidebar:
     st.header("Generation Inputs")
@@ -32,6 +33,14 @@ with st.sidebar:
 
 content_type = "video" if content_type_ui == "Video Prompt" else "static"
 competitor_urls = [u.strip() for u in urls_text.splitlines() if u.strip()]
+platform_map = {
+    "Twitter/X": "Twitter/X",
+    "Instagram": "Instagram",
+    "TikTok": "TikTok",
+    "LinkedIn": "LinkedIn",
+    "Facebook": "Facebook",
+}
+selected_platforms = [platform_map[p] for p in platforms]
 brand_logo_path = None
 if brand_logo is not None:
     tmp_dir = Path("/tmp/content_factory_uploads")
@@ -47,7 +56,7 @@ if st.button("Generate", type="primary"):
         orch = Orchestrator()
         result_box["value"] = orch.run(
             topic=topic,
-            platforms=platforms,
+            platforms=selected_platforms,
             content_type=content_type,
             language=language,
             brand_color=[color],
@@ -68,6 +77,8 @@ if st.button("Generate", type="primary"):
     result = result_box.get("value") or {}
     ideas = result.get("ideas", [])
     media_results = result.get("results", [])
+    if result.get("warning"):
+        st.warning(result["warning"])
 
     if not ideas:
         st.error("No ideas generated. Check API keys and try again.")
@@ -81,6 +92,8 @@ if st.button("Generate", type="primary"):
                 if content_type == "static":
                     col1, col2 = st.columns([1, 1])
                     image_path = getattr(media_obj, "image_path", None)
+                    if isinstance(media_obj, dict):
+                        image_path = media_obj.get("image_path")
 
                     with col1:
                         if image_path and os.path.exists(image_path):

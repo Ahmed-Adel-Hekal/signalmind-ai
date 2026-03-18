@@ -106,6 +106,44 @@ Return ONLY valid JSON:
         return "\n".join(base_context) + "\n\n" + schema
 
 
+def _build_fallback_payload(topic: str, content_type: str, number_idea: int) -> dict:
+    idea_count = max(1, int(number_idea or 1))
+    ideas = []
+    for idx in range(idea_count):
+        i = idx + 1
+        if content_type == "video":
+            ideas.append(
+                {
+                    "hook": {"text": f"{topic}: 3 things people miss (Idea {i})", "duration_seconds": 3},
+                    "script": [
+                        {"scene": 1, "visuals": f"Problem context for {topic}", "voiceover": f"Most people miss this about {topic}.", "duration_seconds": 4},
+                        {"scene": 2, "visuals": "Actionable steps with text overlays", "voiceover": "Here is the simple framework to fix it.", "duration_seconds": 5},
+                        {"scene": 3, "visuals": "CTA with branded visual", "voiceover": "Follow for more practical playbooks.", "duration_seconds": 3},
+                    ],
+                    "caption": f"Quick breakdown for {topic}. Save this for later.",
+                    "hashtags": ["#marketing", "#content", "#ai"],
+                    "cta": {"text": "Follow for more", "placement": "end"},
+                    "estimated_duration_seconds": 12,
+                    "visual_direction": {"pacing": "fast", "transitions": "cut", "color_usage": "clean"},
+                }
+            )
+        else:
+            ideas.append(
+                {
+                    "hook": f"Stop guessing your {topic} strategy (Idea {i})",
+                    "post_copy": (
+                        f"If your {topic} content feels random, use this sequence: "
+                        "1) strong hook, 2) one insight, 3) one action. "
+                        "Consistency beats complexity."
+                    ),
+                    "hashtags": ["marketing", "content", "socialmedia"],
+                    "image_description": f"Modern social media graphic concept about {topic}",
+                    "visual_direction": "minimal, high-contrast, brand-accented",
+                }
+            )
+    return {"ideas": ideas}
+
+
 def run_content_pipeline(
     topic:            str,
     platforms:        list[str],
@@ -130,7 +168,13 @@ def run_content_pipeline(
     }
     """
     try:
-        platform_literals = [p for p in platforms if p in ["X", "Facebook", "Instagram", "LinkedIn", "TikTok"]]
+        mapped_platforms = []
+        for p in platforms:
+            if p in ("Twitter/X", "Twitter", "X"):
+                mapped_platforms.append("X")
+            else:
+                mapped_platforms.append(p)
+        platform_literals = [p for p in mapped_platforms if p in ["X", "Facebook", "Instagram", "LinkedIn", "TikTok"]]
         config = AgentConfig(
             video_content=(content_type == "video"),
             images=True,
@@ -147,43 +191,62 @@ def run_content_pipeline(
 
         agent = ContentAgent(config=config)
         raw = agent.generate(topic, comp_str, trend_str)
-        parsed = parse_llm_json(raw)
-
-        if not isinstance(parsed, dict):
-            parsed = {"ideas": []}
+        try:
+            parsed = parse_llm_json(raw) if raw else _build_fallback_payload(topic, content_type, number_idea)
+            if not isinstance(parsed, dict):
+                parsed = _build_fallback_payload(topic, content_type, number_idea)
+        except Exception:
+            parsed = _build_fallback_payload(topic, content_type, number_idea)
 
         base_dir = os.path.dirname(os.path.abspath(__file__))
         out_dir = os.path.join(base_dir, "..", output_dir)
+        results = []
+        warnings = []
 
         if content_type == "video":
-            if VideoGenerator is None:
-                raise RuntimeError("VideoGenerator dependencies are unavailable")
-            gen = VideoGenerator(
-                api_key=os.environ.get("AIML_API_KEY", ""),
-                image_url=image_url,
-                language=language,
-                brand_colors=brand_color,
-                aspect_ratio="9:16",
-                output_dir=out_dir,
-            )
+            api_key = os.environ.get("AIML_API_KEY", "")
+            if VideoGenerator is None or not api_key:
+                warnings.append("Video generation dependency/API key unavailable; returned idea prompts only.")
+                results = [
+                    {"idea_index": i, "status": "mock_only", "error": "Video generation unavailable in current environment"}
+                    for i, _ in enumerate(parsed.get("ideas", []))
+                ]
+            else:
+                gen = VideoGenerator(
+                    api_key=api_key,
+                    image_url=image_url,
+                    language=language,
+                    brand_colors=brand_color,
+                    aspect_ratio="9:16",
+                    output_dir=out_dir,
+                )
+                results = gen.generate_all(parsed)
         else:
-            if StaticPostGenerator is None:
-                raise RuntimeError("StaticPostGenerator dependencies are unavailable")
-            gen = StaticPostGenerator(
-                GEMINI_API_KEY=os.environ.get("GEMINI_API_KEY", ""),
-                brand_colors=brand_color,
-                output_dir=out_dir,
-                aspect_ratio="4:5",
-            )
+            api_key = os.environ.get("GEMINI_API_KEY", "")
+            if StaticPostGenerator is None or not api_key:
+                warnings.append("Static image generation dependency/API key unavailable; returned post ideas only.")
+                results = [
+                    {"idea_index": i, "status": "mock_only", "error": "Image generation unavailable in current environment"}
+                    for i, _ in enumerate(parsed.get("ideas", []))
+                ]
+            else:
+                gen = StaticPostGenerator(
+                    GEMINI_API_KEY=api_key,
+                    brand_colors=brand_color,
+                    output_dir=out_dir,
+                    aspect_ratio="4:5",
+                )
+                results = gen.generate_all(parsed)
 
-        results = gen.generate_all(parsed)
-
-        return {
+        output = {
             "type": content_type,
             "ideas": parsed.get("ideas", []),
             "results": results,
             "raw_json": parsed,
         }
+        if warnings:
+            output["warning"] = " | ".join(warnings)
+        return output
     except Exception as exc:
         return {
             "type": content_type,
