@@ -2,6 +2,7 @@ aiohttp
 requests
 beautifulsoup4
 lxml
+streamlit
 
 pandas
 numpy
@@ -9,8 +10,12 @@ numpy
 sentence-transformers
 scikit-learn
 
+google-genai
 google-generativeai
 python-dotenv
+json-repair
+pytrends
+pillow
 
 tqdm
 rich
