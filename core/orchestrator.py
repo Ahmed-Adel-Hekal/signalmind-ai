@@ -73,7 +73,11 @@ class Orchestrator:
         logger.info("Step 1 complete in %.2fs", time.perf_counter() - step1)
 
         step2 = time.perf_counter()
-        trend_insight = TrendAgent().analyze(platforms=platforms, niche=niche)
+        trend_insight = TrendAgent().analyze(
+            platforms=platforms,
+            topic=topic,
+            niche=niche,
+        )
         logger.info("Step 2 complete in %.2fs", time.perf_counter() - step2)
 
         step3 = time.perf_counter()
