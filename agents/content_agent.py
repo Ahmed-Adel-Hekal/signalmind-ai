@@ -1,11 +1,24 @@
 import os
 from dataclasses import dataclass, field
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - optional dependency fallback
+    def load_dotenv(*_args, **_kwargs):
+        return False
 
 from core.gemini_client import Agent
-from media.video_generator import parse_llm_json, VideoGenerator
-from media.static_post import StaticPostGenerator
+from media.video_generator import parse_llm_json
+
+try:
+    from media.video_generator import VideoGenerator
+except Exception:  # pragma: no cover - optional dependency fallback
+    VideoGenerator = None
+
+try:
+    from media.static_post import StaticPostGenerator
+except Exception:  # pragma: no cover - optional dependency fallback
+    StaticPostGenerator = None
 
 load_dotenv()
 
@@ -143,6 +156,8 @@ def run_content_pipeline(
         out_dir = os.path.join(base_dir, "..", output_dir)
 
         if content_type == "video":
+            if VideoGenerator is None:
+                raise RuntimeError("VideoGenerator dependencies are unavailable")
             gen = VideoGenerator(
                 api_key=os.environ.get("AIML_API_KEY", ""),
                 image_url=image_url,
@@ -152,6 +167,8 @@ def run_content_pipeline(
                 output_dir=out_dir,
             )
         else:
+            if StaticPostGenerator is None:
+                raise RuntimeError("StaticPostGenerator dependencies are unavailable")
             gen = StaticPostGenerator(
                 GEMINI_API_KEY=os.environ.get("GEMINI_API_KEY", ""),
                 brand_colors=brand_color,

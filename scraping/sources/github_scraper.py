@@ -1,5 +1,8 @@
 """engine/scraping_sources/github_trending_scraper.py — Sprint 4"""
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except Exception:  # pragma: no cover - optional dependency fallback
+    BeautifulSoup = None
 from scraping.base_scraper import BaseScraper
 
 TIMEFRAMES = ["daily", "weekly"]
@@ -9,6 +12,10 @@ class GitHubTrendingScraper(BaseScraper):
     SOURCE_NAME = "github_trending"
 
     def fetch(self, limit: int = 50) -> list[dict]:
+        if BeautifulSoup is None:
+            self.logger.warning("bs4 not installed -- skipping GitHub Trending scrape")
+            return []
+
         posts = []
         seen = set()
 

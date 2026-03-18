@@ -14,7 +14,10 @@ Sprint 4: Base class مشترك لكل الـ scrapers.
 
 import time
 import requests
-import feedparser
+try:
+    import feedparser
+except Exception:  # pragma: no cover - optional dependency fallback
+    feedparser = None
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
@@ -80,6 +83,9 @@ class BaseScraper:
     def get_feed(self, url: str) -> list:
         """RSS/Atom feed → list of entries."""
         try:
+            if feedparser is None:
+                self.logger.warning("feedparser not installed; skipping RSS fetch for %s", url)
+                return []
             feed = feedparser.parse(url)
             return feed.entries
         except Exception as e:

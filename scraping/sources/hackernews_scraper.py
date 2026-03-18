@@ -1,9 +1,12 @@
 import asyncio
-import aiohttp
+try:
+    import aiohttp
+except Exception:  # pragma: no cover - optional dependency fallback
+    aiohttp = None
 from scraping.base_scraper import BaseScraper
 
 BASE_URL = "https://hacker-news.firebaseio.com/v0"
-TIMEOUT = aiohttp.ClientTimeout(total=10)
+TIMEOUT = aiohttp.ClientTimeout(total=10) if aiohttp else None
 CONCURRENT_LIMIT = 20
 
 
@@ -11,6 +14,9 @@ class HackerNewsScraper(BaseScraper):
     SOURCE_NAME = "hackernews"
 
     def fetch(self, limit: int = 100) -> list:
+        if aiohttp is None:
+            self.logger.warning("aiohttp not installed -- skipping HackerNews scrape")
+            return []
         try:
             return asyncio.run(self._scrape_async(limit))
         except Exception as e:

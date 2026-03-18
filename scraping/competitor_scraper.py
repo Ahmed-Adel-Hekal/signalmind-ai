@@ -1,9 +1,15 @@
 import re
 from urllib.parse import urlparse
 
-import feedparser
+try:
+    import feedparser
+except Exception:  # pragma: no cover - optional dependency fallback
+    feedparser = None
 import requests
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except Exception:  # pragma: no cover - optional dependency fallback
+    BeautifulSoup = None
 
 from core.logger import get_logger
 
@@ -56,6 +62,9 @@ class CompetitorScraper:
             if not channel_id:
                 return []
 
+            if feedparser is None:
+                return []
+
             feed = feedparser.parse(
                 f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
             )
@@ -86,6 +95,9 @@ class CompetitorScraper:
         Max 10 items. Timeout 10s.
         """
         try:
+            if BeautifulSoup is None:
+                return []
+
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")

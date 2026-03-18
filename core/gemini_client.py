@@ -1,6 +1,10 @@
 import os
 import time
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - optional dependency fallback
+    def load_dotenv(*_args, **_kwargs):
+        return False
 try:
     from google import genai
     from google.genai import types

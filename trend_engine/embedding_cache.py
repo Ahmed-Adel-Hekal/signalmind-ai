@@ -16,6 +16,7 @@ def load_cache():
 
 
 def save_cache(cache):
+    os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
 
     with open(CACHE_FILE, "wb") as f:
 

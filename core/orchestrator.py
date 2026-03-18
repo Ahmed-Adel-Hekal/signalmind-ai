@@ -1,6 +1,10 @@
 import time
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - optional dependency fallback
+    def load_dotenv(*_args, **_kwargs):
+        return False
 
 from agents.competitor_agent import CompetitorAgent
 from agents.content_agent import run_content_pipeline
