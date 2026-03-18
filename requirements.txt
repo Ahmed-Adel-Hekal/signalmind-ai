@@ -2,7 +2,6 @@ aiohttp
 requests
 beautifulsoup4
 lxml
-streamlit
 fastapi
 uvicorn
 python-multipart

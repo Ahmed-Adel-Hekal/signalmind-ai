@@ -26,12 +26,11 @@ python --version
 
 ## 2) Open Terminal in project folder
 
-After extracting/cloning the project, open Terminal in the folder where `app.py` exists.
+After extracting/cloning the project, open Terminal in the project root.
 
 You should see files like:
-- `app.py`
+- `customer_portal/`
 - `requirements.txt`
-- `pages/`
 - `core/`
 
 ---
@@ -84,26 +83,11 @@ OPENROUTER_API_KEY=your_real_key_here
 
 ## 5) Start app
 
-### Mac/Linux
+### Mac/Linux / Windows PowerShell
 
 ```bash
 source .venv/bin/activate
-streamlit run app.py
-```
-
-### Windows PowerShell
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-streamlit run app.py
-```
-
-### Recommended customer portal (non-technical friendly UI)
-
-After activation, run:
-
-```bash
-uvicorn customer_portal.main:app --host 0.0.0.0 --port 8080 --reload
+./scripts/run_customer_portal.sh
 ```
 
 Open:
@@ -116,7 +100,7 @@ Open:
 
 Terminal will print a URL like:
 
-- `http://localhost:8501`
+- `http://localhost:8080`
 
 Open it in browser.
 
@@ -124,30 +108,23 @@ Open it in browser.
 
 ## 7) Use the app
 
-1. Open **Generate** page in sidebar.
-2. Fill topic/platform/content type.
+1. Fill topic/platform/content type.
+2. Select LLM provider + model.
 3. Click **Generate**.
-4. Review ideas in tabs.
+4. Review confidence, compliance, ideas, and trend table.
 
 ---
 
 ## Common issues
 
-### A) `streamlit: command not found`
-Run:
-
-```bash
-pip install streamlit
-```
-
-### B) Missing package error
+### A) Missing package error
 Run:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### C) App runs but no generated media
+### B) App runs but no generated media
 - Check `.env` keys are correct.
 - Static/video generation needs valid API keys.
 

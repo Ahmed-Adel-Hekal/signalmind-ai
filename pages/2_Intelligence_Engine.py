@@ -1,3 +1,0 @@
-from intelligence_page import show_intelligence_page
-
-show_intelligence_page()
