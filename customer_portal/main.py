@@ -46,6 +46,9 @@ async def home(request: Request):
                 "number_idea": 3,
                 "brand_color": "#3B82F6",
                 "platforms": ["Instagram", "LinkedIn"],
+                "llm_provider": "google",
+                "llm_model": "gemini-2.5-flash",
+                "llm_api_key": "",
             },
         },
     )
@@ -61,6 +64,9 @@ async def generate(
     number_idea: int = Form(3),
     brand_color: str = Form("#3B82F6"),
     competitor_urls: str = Form(""),
+    llm_provider: str = Form("google"),
+    llm_model: str = Form("gemini-2.5-flash"),
+    llm_api_key: str = Form(""),
 ):
     selected_platforms = _normalize_platforms(platforms)
     urls = [u.strip() for u in competitor_urls.splitlines() if u.strip()]
@@ -79,6 +85,9 @@ async def generate(
             niche=niche,
             output_dir="output_posts",
             image_url="",
+            llm_provider=llm_provider,
+            llm_model=llm_model,
+            llm_api_key=llm_api_key or None,
         )
     except Exception as exc:
         return templates.TemplateResponse(
@@ -100,6 +109,8 @@ async def generate(
             "selected_platforms": selected_platforms,
             "topic": topic,
             "content_type": content_type,
+            "llm_provider": llm_provider,
+            "llm_model": llm_model,
         },
     )
 

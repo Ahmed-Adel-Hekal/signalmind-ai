@@ -51,10 +51,28 @@
 
           <div class="row g-3 mt-1">
             <div class="col-md-4">
+              <label class="form-label">LLM Provider</label>
+              <select class="form-select" name="llm_provider">
+                <option value="google" {% if defaults.llm_provider == "google" %}selected{% endif %}>Google API</option>
+                <option value="openrouter" {% if defaults.llm_provider == "openrouter" %}selected{% endif %}>OpenRouter (OpenAI-style)</option>
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label">Model name</label>
+              <input class="form-control" name="llm_model" value="{{ defaults.llm_model }}" placeholder="e.g., gemini-2.5-flash or minimax/minimax-m2.5:free" />
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-4">
               <label class="form-label">Brand color</label>
               <input class="form-control form-control-color" type="color" name="brand_color" value="{{ defaults.brand_color }}" />
             </div>
             <div class="col-md-8">
+              <label class="form-label">API key (optional override)</label>
+              <input class="form-control" type="password" name="llm_api_key" value="{{ defaults.llm_api_key }}" placeholder="Leave blank to use .env key" />
+            </div>
+            <div class="col-md-12">
               <label class="form-label">Competitor URLs (optional, one per line)</label>
               <textarea class="form-control" name="competitor_urls" rows="3" placeholder="https://instagram.com/brand"></textarea>
             </div>

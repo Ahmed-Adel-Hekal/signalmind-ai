@@ -2,6 +2,11 @@
 {% block content %}
 <a class="btn btn-outline-secondary mb-3" href="/">← New generation</a>
 
+<div class="alert alert-light border">
+  <strong>Provider:</strong> {{ llm_provider or "google" }} |
+  <strong>Model:</strong> {{ llm_model or "gemini-2.5-flash" }}
+</div>
+
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}

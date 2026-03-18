@@ -42,7 +42,6 @@ logger = get_logger("TrendAgent")
 class TrendAgent:
     def __init__(self):
         self.loader = DataLoader()
-        self.deep_search_agent = Agent(model="gemini-2.5-flash")
         self.forecaster = TrendForecaster()
         self.ranker = TrendRanker()
         self.time_analyzer = TrendTimeAnalyzer()
@@ -76,6 +75,9 @@ class TrendAgent:
         markets: list[str] = None,
         limit_per_source: int = 100,
         force_refresh: bool = False,
+        llm_provider: str = "google",
+        llm_model: str = "gemini-2.5-flash",
+        llm_api_key: str | None = None,
     ) -> dict:
         """
         Runs scraping + deep search + 9-stage trend pipeline.
@@ -84,16 +86,29 @@ class TrendAgent:
         Never raises -- always returns a dict.
         """
         try:
-            cache_key = self._cache_key(topic, platforms, niche, markets or [], limit_per_source)
+            cache_key = self._cache_key(
+                topic,
+                platforms,
+                niche,
+                markets or [],
+                limit_per_source,
+                llm_provider,
+                llm_model,
+            )
             if not force_refresh:
                 cached = self._read_cached_result(cache_key)
                 if cached is not None:
                     cached["cache"] = {"used": True, "ttl_hours": 24}
                     return cached
 
+            deep_search_agent = Agent(
+                provider=llm_provider,
+                model=llm_model,
+                api_key=llm_api_key,
+            )
             posts = self._run_scrapers(platforms, limit_per_source, topic=topic)
             posts.extend(self._run_topic_probes(topic, limit=max(10, min(50, limit_per_source // 2))))
-            posts.extend(self._run_deep_search(topic, niche, markets or []))
+            posts.extend(self._run_deep_search(topic, niche, markets or [], deep_search_agent))
 
             if not posts:
                 fallback = self.loader.load_trends(platform=None, niche=niche, limit=30)
@@ -119,6 +134,8 @@ class TrendAgent:
         niche: str,
         markets: list[str],
         limit_per_source: int,
+        llm_provider: str,
+        llm_model: str,
     ) -> str:
         raw = {
             "topic": topic or "",
@@ -126,6 +143,8 @@ class TrendAgent:
             "niche": niche or "",
             "markets": sorted(markets or []),
             "limit_per_source": int(limit_per_source or 0),
+            "llm_provider": llm_provider or "google",
+            "llm_model": llm_model or "gemini-2.5-flash",
         }
         return hashlib.sha256(json.dumps(raw, sort_keys=True).encode("utf-8")).hexdigest()
 
@@ -357,7 +376,13 @@ class TrendAgent:
             logger.warning("Topic probe github failed: %s", exc)
             return []
 
-    def _run_deep_search(self, topic: str, niche: str, markets: list[str]) -> list[dict]:
+    def _run_deep_search(
+        self,
+        topic: str,
+        niche: str,
+        markets: list[str],
+        deep_search_agent: Agent,
+    ) -> list[dict]:
         market_text = ", ".join(markets) if markets else "global"
         prompt = f"""
 You are a trend analyst.
@@ -365,7 +390,7 @@ Focus on this topic: {topic or "general"}.
 Find 8 emerging social-media trends for niche: {niche} in markets: {market_text}.
 Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
 """.strip()
-        raw = self.deep_search_agent.ask(prompt, max_tokens=1024)
+        raw = deep_search_agent.ask(prompt, max_tokens=1024)
         if not raw:
             return []
 

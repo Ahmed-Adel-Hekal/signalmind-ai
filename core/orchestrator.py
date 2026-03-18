@@ -32,6 +32,9 @@ class Orchestrator:
         niche: str = "tech",
         output_dir: str = "output_posts",
         image_url: str = "",
+        llm_provider: str = "google",
+        llm_model: str = "gemini-2.5-flash",
+        llm_api_key: str | None = None,
     ) -> dict:
         """
         Full pipeline:
@@ -69,7 +72,11 @@ class Orchestrator:
             if selected_platform:
                 selected_platform = selected_platform.replace("/X", "").replace("/x", "")
             competitor_posts = DataLoader().load_competitor_posts(platform=selected_platform)
-        comp_insight = CompetitorAgent().analyze(competitor_posts)
+        comp_insight = CompetitorAgent(
+            provider=llm_provider,
+            model=llm_model,
+            api_key=llm_api_key,
+        ).analyze(competitor_posts)
         logger.info("Step 1 complete in %.2fs", time.perf_counter() - step1)
 
         step2 = time.perf_counter()
@@ -77,6 +84,9 @@ class Orchestrator:
             platforms=platforms,
             topic=topic,
             niche=niche,
+            llm_provider=llm_provider,
+            llm_model=llm_model,
+            llm_api_key=llm_api_key,
         )
         logger.info("Step 2 complete in %.2fs", time.perf_counter() - step2)
 
@@ -93,6 +103,9 @@ class Orchestrator:
             trend_insight,
             output_dir,
             image_url,
+            llm_provider,
+            llm_model,
+            llm_api_key,
         )
         # Expose intelligence artifacts for frontends.
         if isinstance(result, dict):

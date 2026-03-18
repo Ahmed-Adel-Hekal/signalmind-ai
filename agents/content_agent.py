@@ -26,6 +26,8 @@ load_dotenv()
 
 @dataclass
 class AgentConfig:
+    llm_provider: str = "google"
+    llm_api_key: str | None = None
     video_content: bool = False
     images: bool = True
     brand_color: list[str] = field(default_factory=lambda: ["#3B82F6"])
@@ -39,7 +41,11 @@ class AgentConfig:
 class ContentAgent(Agent):
     def __init__(self, config: AgentConfig):
         self.config = config
-        super().__init__(model=config.model)
+        super().__init__(
+            provider=config.llm_provider,
+            model=config.model,
+            api_key=config.llm_api_key,
+        )
 
     def generate(
         self,
@@ -157,6 +163,9 @@ def run_content_pipeline(
     trend_insight:    dict | None,
     output_dir:       str = "output_posts",
     image_url:        str = "",
+    llm_provider:     str = "google",
+    llm_model:        str = "gemini-2.5-flash",
+    llm_api_key:      str | None = None,
 ) -> dict:
     """
     Full end-to-end content generation.
@@ -177,12 +186,14 @@ def run_content_pipeline(
                 mapped_platforms.append(p)
         platform_literals = [p for p in mapped_platforms if p in ["X", "Facebook", "Instagram", "LinkedIn", "TikTok"]]
         config = AgentConfig(
+            llm_provider=llm_provider,
+            llm_api_key=llm_api_key,
             video_content=(content_type == "video"),
             images=True,
             brand_color=brand_color,
             brand_img=brand_img,
             target_platform=platform_literals,
-            model="gemini-2.5-flash",
+            model=llm_model or "gemini-2.5-flash",
             language=language,
             number_idea=number_idea,
         )
