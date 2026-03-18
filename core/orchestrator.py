@@ -94,6 +94,10 @@ class Orchestrator:
             output_dir,
             image_url,
         )
+        # Expose intelligence artifacts for frontends.
+        if isinstance(result, dict):
+            result["competitor_insight"] = comp_insight
+            result["trend_insight"] = trend_insight
         logger.info("Step 3 complete in %.2fs", time.perf_counter() - step3)
         logger.info("Pipeline complete in %.2fs", time.perf_counter() - total_start)
 

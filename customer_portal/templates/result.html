@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="btn btn-outline-secondary mb-3" href="/">← New generation</a>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% set trend = result.get("trend_insight", {}) %}
+{% set summary = trend.get("confidence_summary", {}) %}
+{% set compliance = result.get("compliance_report", {}) %}
+
+{% if result.get("warning") %}
+<div class="alert alert-warning">{{ result.get("warning") }}</div>
+{% endif %}
+
+{% if summary %}
+<div class="card mb-3 shadow-sm">
+  <div class="card-body">
+    <h5>Trend Confidence</h5>
+    <div class="row text-center">
+      <div class="col"><div class="metric">{{ summary.get("average_score", 0) }}</div><small>Average</small></div>
+      <div class="col"><div class="metric">{{ summary.get("high_confidence_count", 0) }}</div><small>High</small></div>
+      <div class="col"><div class="metric">{{ summary.get("medium_confidence_count", 0) }}</div><small>Medium</small></div>
+      <div class="col"><div class="metric">{{ summary.get("low_confidence_count", 0) }}</div><small>Low</small></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if compliance %}
+<div class="card mb-3 shadow-sm">
+  <div class="card-body">
+    <h5>Compliance Status: <span class="badge text-bg-info">{{ compliance.get("status", "passed") }}</span></h5>
+    <p class="mb-1">Sanitized: {{ compliance.get("sanitized_count", 0) }}</p>
+    <p class="mb-0">Replaced for safety: {{ compliance.get("replaced_count", 0) }}</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-3">
+  {% for idea in result.get("ideas", []) %}
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5>Idea {{ loop.index }}</h5>
+        {% if result.get("type") == "video" %}
+          <p><strong>Hook:</strong> {{ idea.get("hook", {}).get("text", "") if idea.get("hook") is mapping else idea.get("hook", "") }}</p>
+          <p><strong>Caption:</strong> {{ idea.get("caption", "") }}</p>
+          <p><strong>Hashtags:</strong> {{ " ".join(idea.get("hashtags", [])) }}</p>
+          <hr />
+          <h6>Scenes</h6>
+          <ol>
+            {% for scene in idea.get("script", []) %}
+            <li>
+              <strong>Visuals:</strong> {{ scene.get("visuals", "") }}<br />
+              <strong>Voiceover:</strong> {{ scene.get("voiceover", "") }}
+            </li>
+            {% endfor %}
+          </ol>
+        {% else %}
+          <p><strong>Hook:</strong> {{ idea.get("hook", "") }}</p>
+          <p><strong>Caption:</strong> {{ idea.get("post_copy", "") }}</p>
+          <p><strong>Hashtags:</strong>
+            {% for h in idea.get("hashtags", []) %}
+              #{{ h }}
+            {% endfor %}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% set top_trends = trend.get("top_trends", []) %}
+{% if top_trends %}
+<div class="card mt-4 shadow-sm">
+  <div class="card-body">
+    <h5>Top Trend Signals</h5>
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Strength</th>
+            <th>Forecast</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in top_trends[:8] %}
+          <tr>
+            <td>{{ t.get("topic", "") }}</td>
+            <td>{{ t.get("trend_strength", "") }}</td>
+            <td>{{ t.get("forecast", "") }}</td>
+            <td>{{ t.get("confidence_score", 0) }} ({{ t.get("confidence_level", "low") }})</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

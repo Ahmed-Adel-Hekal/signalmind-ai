@@ -103,7 +103,7 @@ class TrendAgent:
                 return result
 
             ranked = self._run_trend_pipeline(posts)
-            result = self._format_for_content_agent(ranked)
+            result = self._format_for_content_agent(ranked, topic=topic)
             result["cache"] = {"used": False, "ttl_hours": 24}
             self._write_cached_result(cache_key, result)
             return result
@@ -401,7 +401,14 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
         ranked["keywords"] = extract_keywords(rows, top_k=12)
         return ranked
 
-    def _format_for_content_agent(self, ranked: dict) -> dict:
+    def _confidence_level(self, score: float) -> str:
+        if score >= 75:
+            return "high"
+        if score >= 55:
+            return "medium"
+        return "low"
+
+    def _format_for_content_agent(self, ranked: dict, topic: str = "") -> dict:
         """Convert ranked dict to ContentAgent-ready trend_insight dict."""
         all_rows = (
             ranked.get("exploding", [])
@@ -409,11 +416,44 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
             + ranked.get("future", [])
             + ranked.get("stable", [])
         )
+        topic_keywords = self._topic_keywords(topic)
+        max_trend_score = max([float(r.get("trend_score", 0) or 0) for r in all_rows], default=1.0) or 1.0
+        source_quality = {
+            "deep_search": 0.55,
+            "reddit": 0.75,
+            "reddit_search": 0.78,
+            "hackernews": 0.8,
+            "hackernews_search": 0.82,
+            "github": 0.8,
+            "github_search": 0.85,
+            "linkedin": 0.7,
+            "twitter": 0.68,
+            "google_news": 0.74,
+            "google_news_search": 0.78,
+            "youtube": 0.7,
+            "instagram": 0.65,
+            "tiktok": 0.65,
+        }
 
         top = []
         for row in all_rows[:12]:
             state = row.get("trend_state", "stable")
             strength = "high" if state == "exploding" else "medium" if state == "growing" else "low"
+            row_source = str(row.get("source", "social"))
+            source_key = row_source.split("/", 1)[0]
+
+            trend_norm = min(1.0, max(0.0, float(row.get("trend_score", 0) or 0) / max_trend_score))
+            if topic_keywords:
+                topic_match = min(1.0, self._post_topic_score(row, topic_keywords) / max(1, len(topic_keywords)))
+            else:
+                topic_match = 0.5
+            source_norm = source_quality.get(source_key, 0.6)
+            forecast_norm = 1.0 if row.get("forecast") == "viral" else 0.8 if row.get("forecast") == "future_trend" else 0.6
+            confidence_score = round(
+                (0.45 * trend_norm + 0.25 * topic_match + 0.15 * source_norm + 0.15 * forecast_norm) * 100,
+                1,
+            )
+            confidence_level = self._confidence_level(confidence_score)
             top.append(
                 {
                     "topic": row.get("title", ""),
@@ -422,13 +462,24 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
                     "marketing_angle": f"Leverage {row.get('source', 'social')} momentum",
                     "hook_style": "question" if len(row.get("title", "")) % 2 else "shocking statistic",
                     "forecast": row.get("forecast", "stable"),
+                    "confidence_score": confidence_score,
+                    "confidence_level": confidence_level,
                 }
             )
+        scores = [float(item.get("confidence_score", 0) or 0) for item in top]
+        confidence_summary = {
+            "average_score": round(sum(scores) / len(scores), 1) if scores else 0.0,
+            "high_confidence_count": len([s for s in scores if s >= 75]),
+            "medium_confidence_count": len([s for s in scores if 55 <= s < 75]),
+            "low_confidence_count": len([s for s in scores if s < 55]),
+            "cacheable_for_hours": 24,
+        }
 
         return {
             "top_trends": top,
             "keywords": ranked.get("keywords", []),
             "raw_ranked": ranked,
+            "confidence_summary": confidence_summary,
         }
 
     def _format_from_trends_fallback(self, trends: list[dict], topic: str = "") -> dict:
@@ -444,6 +495,9 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
 
         top = []
         for trend in trends:
+            score = float(trend.get("score", 0) or 0)
+            confidence_score = round(min(100.0, max(35.0, score)), 1)
+            confidence_level = self._confidence_level(confidence_score)
             top.append(
                 {
                     "topic": trend.get("topic", ""),
@@ -452,6 +506,8 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
                     "marketing_angle": trend.get("marketing_angle", ""),
                     "hook_style": trend.get("hook_style", "question"),
                     "forecast": "future_trend" if trend.get("score", 0) >= 80 else "stable",
+                    "confidence_score": confidence_score,
+                    "confidence_level": confidence_level,
                 }
             )
 
@@ -473,8 +529,17 @@ Return ONLY JSON: {{"trends": ["trend 1", "trend 2"]}}
                 }
             )
 
+        trimmed = top[:12]
+        scores = [float(item.get("confidence_score", 0) or 0) for item in trimmed]
         return {
-            "top_trends": top[:12],
+            "top_trends": trimmed,
             "keywords": [trend.get("topic", "").split()[0] for trend in trends[:8] if trend.get("topic")],
             "raw_ranked": raw_ranked,
+            "confidence_summary": {
+                "average_score": round(sum(scores) / len(scores), 1) if scores else 0.0,
+                "high_confidence_count": len([s for s in scores if s >= 75]),
+                "medium_confidence_count": len([s for s in scores if 55 <= s < 75]),
+                "low_confidence_count": len([s for s in scores if s < 55]),
+                "cacheable_for_hours": 24,
+            },
         }

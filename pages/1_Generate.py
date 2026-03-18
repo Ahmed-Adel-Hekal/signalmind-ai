@@ -79,6 +79,31 @@ if st.button("Generate", type="primary"):
     media_results = result.get("results", [])
     if result.get("warning"):
         st.warning(result["warning"])
+    trend_insight = result.get("trend_insight", {}) or {}
+    confidence_summary = trend_insight.get("confidence_summary", {}) or {}
+    compliance_report = result.get("compliance_report", {}) or {}
+
+    if confidence_summary:
+        st.subheader("Trend Confidence")
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Avg confidence", f"{confidence_summary.get('average_score', 0)}")
+        c2.metric("High", confidence_summary.get("high_confidence_count", 0))
+        c3.metric("Medium", confidence_summary.get("medium_confidence_count", 0))
+        c4.metric("Low", confidence_summary.get("low_confidence_count", 0))
+
+    if compliance_report:
+        st.subheader("Compliance Check")
+        status = compliance_report.get("status", "passed")
+        if status == "passed":
+            st.success("All ideas passed compliance checks.")
+        elif status == "sanitized":
+            st.warning(
+                f"Content sanitized in {compliance_report.get('sanitized_count', 0)} idea(s)."
+            )
+        else:
+            st.error(
+                f"Compliance replaced {compliance_report.get('replaced_count', 0)} idea(s) with safe variants."
+            )
 
     if not ideas:
         st.error("No ideas generated. Check API keys and try again.")

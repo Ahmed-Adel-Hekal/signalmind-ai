@@ -8,6 +8,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
         return False
 
 from core.gemini_client import Agent
+from core.compliance import ContentComplianceGuard
 from media.video_generator import parse_llm_json
 
 try:
@@ -203,6 +204,16 @@ def run_content_pipeline(
         results = []
         warnings = []
 
+        compliance_guard = ContentComplianceGuard(language=language)
+        moderated_payload, compliance_report = compliance_guard.moderate_content(parsed, content_type=content_type, topic=topic)
+        parsed = moderated_payload
+        if compliance_report.get("status") in {"sanitized", "adjusted"}:
+            warnings.append(
+                f"Compliance layer {compliance_report['status']} content "
+                f"(sanitized={compliance_report.get('sanitized_count', 0)}, "
+                f"replaced={compliance_report.get('replaced_count', 0)})."
+            )
+
         if content_type == "video":
             api_key = os.environ.get("AIML_API_KEY", "")
             if VideoGenerator is None or not api_key:
@@ -243,6 +254,7 @@ def run_content_pipeline(
             "ideas": parsed.get("ideas", []),
             "results": results,
             "raw_json": parsed,
+            "compliance_report": compliance_report,
         }
         if warnings:
             output["warning"] = " | ".join(warnings)

@@ -3,6 +3,10 @@ requests
 beautifulsoup4
 lxml
 streamlit
+fastapi
+uvicorn
+python-multipart
+jinja2
 
 pandas
 numpy

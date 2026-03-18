@@ -95,6 +95,18 @@ streamlit run app.py
 streamlit run app.py
 ```
 
+### Recommended customer portal (non-technical friendly UI)
+
+After activation, run:
+
+```bash
+uvicorn customer_portal.main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+Open:
+
+- `http://localhost:8080`
+
 ---
 
 ## 6) Open in browser
