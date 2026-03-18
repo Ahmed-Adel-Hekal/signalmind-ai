@@ -23,6 +23,12 @@ with st.sidebar:
     _goal = st.selectbox("Goal", ["Engagement", "Awareness", "Sales"], index=0)
     language = st.selectbox("Language", ["English", "Arabic", "Egyptian Arabic"], index=0)
     number_idea = st.slider("Number of ideas", min_value=1, max_value=5, value=3)
+    llm_provider = st.selectbox("LLM Provider", ["google", "openrouter"], index=0)
+    llm_model = st.text_input(
+        "Model name",
+        value="gemini-2.5-flash" if llm_provider == "google" else "minimax/minimax-m2.5:free",
+    )
+    llm_api_key = st.text_input("API key override (optional)", value="", type="password")
 
     with st.expander("Brand"):
         color = st.color_picker("Brand color", value="#3B82F6")
@@ -66,6 +72,9 @@ if st.button("Generate", type="primary"):
             niche="tech" if "AI" in topic.upper() else "marketing",
             output_dir="output_posts",
             image_url="",
+            llm_provider=llm_provider,
+            llm_model=llm_model,
+            llm_api_key=llm_api_key or None,
         )
 
     thread = threading.Thread(target=_runner, daemon=True)

@@ -61,6 +61,7 @@ Then create `.env` file in project root with:
 ```env
 GEMINI_API_KEY=
 AIML_API_KEY=
+OPENROUTER_API_KEY=
 ```
 
 ---
@@ -72,9 +73,11 @@ Open `.env` and fill values:
 ```env
 GEMINI_API_KEY=your_real_key_here
 AIML_API_KEY=your_real_key_here
+OPENROUTER_API_KEY=your_real_key_here
 ```
 
-- `GEMINI_API_KEY` is needed for content + image generation.
+- `GEMINI_API_KEY` is for Google models.
+- `OPENROUTER_API_KEY` is for OpenRouter models (OpenAI-style API).
 - `AIML_API_KEY` is optional (needed for Veo video generation).
 
 ---

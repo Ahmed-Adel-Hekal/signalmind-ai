@@ -17,6 +17,7 @@ scikit-learn
 google-genai
 google-generativeai
 python-dotenv
+openai
 json-repair
 pytrends
 pillow

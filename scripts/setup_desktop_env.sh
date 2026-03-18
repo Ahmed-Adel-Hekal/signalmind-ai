@@ -32,6 +32,7 @@ if [ ! -f ".env" ]; then
   cat > .env <<'EOF'
 GEMINI_API_KEY=
 AIML_API_KEY=
+OPENROUTER_API_KEY=
 EOF
   echo "NOTE: .env created. Add your API keys before full generation."
 fi
@@ -40,5 +41,5 @@ echo
 echo "✅ Setup complete."
 echo "Next steps:"
 echo "1) source .venv/bin/activate"
-echo "2) edit .env and add GEMINI_API_KEY (and AIML_API_KEY for video)"
+echo "2) edit .env and add GEMINI_API_KEY or OPENROUTER_API_KEY (AIML_API_KEY for video)"
 echo "3) streamlit run app.py"
