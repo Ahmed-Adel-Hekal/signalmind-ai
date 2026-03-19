@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title">Generate market-backed social content</h3>
+        <p class="text-muted">Fill the form and get competitor-aware + trend-aware ideas.</p>
+        <form method="post" action="/generate">
+          <div class="mb-3">
+            <label class="form-label">Topic</label>
+            <input class="form-control" name="topic" value="{{ defaults.topic }}" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Platforms</label>
+            <div class="row">
+              {% for p in ["Instagram","TikTok","LinkedIn","Twitter/X","Facebook"] %}
+              <div class="col-md-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="platforms" value="{{ p }}"
+                    {% if p in defaults.platforms %}checked{% endif %}>
+                  <label class="form-check-label">{{ p }}</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Content Type</label>
+              <select class="form-select" name="content_type">
+                <option value="static" {% if defaults.content_type == "static" %}selected{% endif %}>Static Post</option>
+                <option value="video" {% if defaults.content_type == "video" %}selected{% endif %}>Video Prompt</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Language</label>
+              <select class="form-select" name="language">
+                <option>English</option>
+                <option>Arabic</option>
+                <option>Egyptian Arabic</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Number of ideas</label>
+              <input class="form-control" type="number" min="1" max="5" name="number_idea" value="{{ defaults.number_idea }}" />
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-4">
+              <label class="form-label">LLM Provider</label>
+              <select class="form-select" name="llm_provider">
+                <option value="google" {% if defaults.llm_provider == "google" %}selected{% endif %}>Google API</option>
+                <option value="openrouter" {% if defaults.llm_provider == "openrouter" %}selected{% endif %}>OpenRouter (OpenAI-style)</option>
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label">Model name</label>
+              <input class="form-control" name="llm_model" value="{{ defaults.llm_model }}" placeholder="e.g., gemini-2.5-flash or minimax/minimax-m2.5:free" />
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-4">
+              <label class="form-label">Brand color</label>
+              <input class="form-control form-control-color" type="color" name="brand_color" value="{{ defaults.brand_color }}" />
+            </div>
+            <div class="col-md-8">
+              <label class="form-label">API key (optional override)</label>
+              <input class="form-control" type="password" name="llm_api_key" value="{{ defaults.llm_api_key }}" placeholder="Leave blank to use .env key" />
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Competitor URLs (optional, one per line)</label>
+              <textarea class="form-control" name="competitor_urls" rows="3" placeholder="https://instagram.com/brand"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button class="btn btn-primary btn-lg" type="submit">Generate Content</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>What customers see</h5>
+        <ul>
+          <li>Trend confidence score</li>
+          <li>Compliance-safe copy</li>
+          <li>Ready hooks and captions</li>
+          <li>Video scene prompts (if selected)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

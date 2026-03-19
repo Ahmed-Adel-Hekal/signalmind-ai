@@ -32,3 +32,6 @@ Thumbs.db
 dist/
 build/
 *.egg-info
+
+# Runtime cache/output
+data/processed/

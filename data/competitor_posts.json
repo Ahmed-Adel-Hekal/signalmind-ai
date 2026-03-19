@@ -1,0 +1,352 @@
+[
+  {
+    "platform": "Instagram",
+    "niche": "fashion/beauty",
+    "caption": "No-makeup makeup in 5 minutes with dewy skin prep and soft blush layering.",
+    "hook": "Your 5-minute glow-up routine",
+    "format": "carousel",
+    "engagement": "high",
+    "hashtags": [
+      "#beautytips",
+      "#glowup",
+      "#makeuproutine"
+    ],
+    "url": "https://instagram.com/p/fashion001"
+  },
+  {
+    "platform": "Instagram",
+    "niche": "fashion/beauty",
+    "caption": "3 affordable lipstick shades that look premium on every skin tone.",
+    "hook": "Luxury look, drugstore price",
+    "format": "reel",
+    "engagement": "high",
+    "hashtags": [
+      "#lipstick",
+      "#budgetbeauty",
+      "#makeuphacks"
+    ],
+    "url": "https://instagram.com/p/fashion002"
+  },
+  {
+    "platform": "TikTok",
+    "niche": "fashion/beauty",
+    "caption": "Get-ready-with-me for a summer brunch using only 4 products.",
+    "hook": "GRWM: summer brunch edition",
+    "format": "short video",
+    "engagement": "high",
+    "hashtags": [
+      "#GRWM",
+      "#summermakeup",
+      "#beautycreator"
+    ],
+    "url": "https://tiktok.com/@beautylab/video/700001"
+  },
+  {
+    "platform": "YouTube",
+    "niche": "fashion/beauty",
+    "caption": "Spring capsule wardrobe: 12 pieces, 30 outfits.",
+    "hook": "Stop overbuying clothes",
+    "format": "long video",
+    "engagement": "medium",
+    "hashtags": [
+      "#capsulewardrobe",
+      "#fashiontips",
+      "#minimalstyle"
+    ],
+    "url": "https://youtube.com/watch?v=fashion003"
+  },
+  {
+    "platform": "Twitter",
+    "niche": "fashion/beauty",
+    "caption": "Hot take: skin prep matters more than foundation in 2026.",
+    "hook": "Makeup unpopular opinion",
+    "format": "thread",
+    "engagement": "medium",
+    "hashtags": [
+      "#beautytwitter",
+      "#skincarefirst",
+      "#makeup"
+    ],
+    "url": "https://x.com/beautypro/status/1900001"
+  },
+  {
+    "platform": "LinkedIn",
+    "niche": "tech/AI",
+    "caption": "How we cut customer support cost by 37% using AI copilots in 60 days.",
+    "hook": "AI ROI is finally measurable",
+    "format": "text post",
+    "engagement": "high",
+    "hashtags": [
+      "#AI",
+      "#CustomerSupport",
+      "#Automation"
+    ],
+    "url": "https://linkedin.com/posts/tech001"
+  },
+  {
+    "platform": "LinkedIn",
+    "niche": "tech/AI",
+    "caption": "Our team replaced manual QA smoke tests with AI agents and gained 12 hours/week.",
+    "hook": "12 hours back every week",
+    "format": "document",
+    "engagement": "high",
+    "hashtags": [
+      "#AIAgents",
+      "#QualityEngineering",
+      "#Productivity"
+    ],
+    "url": "https://linkedin.com/posts/tech002"
+  },
+  {
+    "platform": "Twitter",
+    "niche": "tech/AI",
+    "caption": "If your prompt is vague, your model output will always be average.",
+    "hook": "Prompting truth no one says",
+    "format": "thread",
+    "engagement": "high",
+    "hashtags": [
+      "#LLM",
+      "#PromptEngineering",
+      "#GenAI"
+    ],
+    "url": "https://x.com/founder/status/1900002"
+  },
+  {
+    "platform": "YouTube",
+    "niche": "tech/AI",
+    "caption": "Building an AI content workflow with Python and Gemini APIs.",
+    "hook": "From idea to assets in one pipeline",
+    "format": "tutorial",
+    "engagement": "medium",
+    "hashtags": [
+      "#Python",
+      "#Gemini",
+      "#AIAutomation"
+    ],
+    "url": "https://youtube.com/watch?v=tech003"
+  },
+  {
+    "platform": "TikTok",
+    "niche": "tech/AI",
+    "caption": "3 AI tools I use daily to run my one-person startup.",
+    "hook": "Solo founder tech stack",
+    "format": "short video",
+    "engagement": "high",
+    "hashtags": [
+      "#aitools",
+      "#startup",
+      "#founder"
+    ],
+    "url": "https://tiktok.com/@buildinpublic/video/700002"
+  },
+  {
+    "platform": "Instagram",
+    "niche": "food",
+    "caption": "High-protein chicken bowl in under 15 minutes with pantry ingredients.",
+    "hook": "15-minute meal prep",
+    "format": "reel",
+    "engagement": "high",
+    "hashtags": [
+      "#mealprep",
+      "#highprotein",
+      "#easyrecipes"
+    ],
+    "url": "https://instagram.com/p/food001"
+  },
+  {
+    "platform": "TikTok",
+    "niche": "food",
+    "caption": "I tested 5 viral air-fryer hacks and ranked them honestly.",
+    "hook": "Viral hack test",
+    "format": "short video",
+    "engagement": "high",
+    "hashtags": [
+      "#airfryer",
+      "#foodtok",
+      "#cookinghacks"
+    ],
+    "url": "https://tiktok.com/@foodlab/video/700003"
+  },
+  {
+    "platform": "YouTube",
+    "niche": "food",
+    "caption": "Meal prep for busy professionals: 3 lunches, one grocery list.",
+    "hook": "Cook once, eat all week",
+    "format": "long video",
+    "engagement": "medium",
+    "hashtags": [
+      "#mealprepideas",
+      "#healthyfood",
+      "#busyprofessionals"
+    ],
+    "url": "https://youtube.com/watch?v=food003"
+  },
+  {
+    "platform": "Instagram",
+    "niche": "food",
+    "caption": "Budget grocery haul + 7 dinners for under $60.",
+    "hook": "$60 weekly dinner plan",
+    "format": "carousel",
+    "engagement": "high",
+    "hashtags": [
+      "#budgetmeals",
+      "#groceryhaul",
+      "#familydinners"
+    ],
+    "url": "https://instagram.com/p/food004"
+  },
+  {
+    "platform": "Twitter",
+    "niche": "food",
+    "caption": "Underrated kitchen upgrade: pre-mixed spice jars for weekdays.",
+    "hook": "Small habit, huge cooking speed",
+    "format": "single post",
+    "engagement": "medium",
+    "hashtags": [
+      "#homecooking",
+      "#kitchentips",
+      "#foodie"
+    ],
+    "url": "https://x.com/foodcoach/status/1900003"
+  },
+  {
+    "platform": "Instagram",
+    "niche": "fitness",
+    "caption": "Beginner fat-loss routine: 4 sessions/week, no fancy equipment.",
+    "hook": "Start with this simple split",
+    "format": "carousel",
+    "engagement": "high",
+    "hashtags": [
+      "#fitnessjourney",
+      "#workoutplan",
+      "#fatloss"
+    ],
+    "url": "https://instagram.com/p/fit001"
+  },
+  {
+    "platform": "TikTok",
+    "niche": "fitness",
+    "caption": "My 20-minute full-body workout for people with desk jobs.",
+    "hook": "Desk-job body reset",
+    "format": "short video",
+    "engagement": "high",
+    "hashtags": [
+      "#homeworkout",
+      "#deskjob",
+      "#mobility"
+    ],
+    "url": "https://tiktok.com/@fitcoach/video/700004"
+  },
+  {
+    "platform": "YouTube",
+    "niche": "fitness",
+    "caption": "7 common form mistakes that kill your progress.",
+    "hook": "You’re losing gains here",
+    "format": "long video",
+    "engagement": "medium",
+    "hashtags": [
+      "#gymtips",
+      "#strengthtraining",
+      "#fitnesseducation"
+    ],
+    "url": "https://youtube.com/watch?v=fit003"
+  },
+  {
+    "platform": "LinkedIn",
+    "niche": "fitness",
+    "caption": "Corporate wellness challenge boosted team participation by 62%.",
+    "hook": "Wellness can be measurable",
+    "format": "text post",
+    "engagement": "medium",
+    "hashtags": [
+      "#CorporateWellness",
+      "#EmployeeHealth",
+      "#Leadership"
+    ],
+    "url": "https://linkedin.com/posts/fit004"
+  },
+  {
+    "platform": "Twitter",
+    "niche": "fitness",
+    "caption": "If motivation is low, reduce workout size—not consistency.",
+    "hook": "Discipline > intensity",
+    "format": "thread",
+    "engagement": "medium",
+    "hashtags": [
+      "#habitbuilding",
+      "#fitnessmindset",
+      "#consistency"
+    ],
+    "url": "https://x.com/trainer/status/1900004"
+  },
+  {
+    "platform": "LinkedIn",
+    "niche": "marketing",
+    "caption": "We used UGC-style ads and dropped CPA by 28% in 3 weeks.",
+    "hook": "UGC is still underpriced attention",
+    "format": "text post",
+    "engagement": "high",
+    "hashtags": [
+      "#PerformanceMarketing",
+      "#UGC",
+      "#PaidSocial"
+    ],
+    "url": "https://linkedin.com/posts/mkt001"
+  },
+  {
+    "platform": "Instagram",
+    "niche": "marketing",
+    "caption": "3 hooks that improved our Reel retention in B2B campaigns.",
+    "hook": "Retention starts in second 1",
+    "format": "reel",
+    "engagement": "high",
+    "hashtags": [
+      "#ContentMarketing",
+      "#ReelsTips",
+      "#B2BMarketing"
+    ],
+    "url": "https://instagram.com/p/mkt002"
+  },
+  {
+    "platform": "TikTok",
+    "niche": "marketing",
+    "caption": "I rewrote one ad copy line and CTR jumped 41%.",
+    "hook": "One sentence changed everything",
+    "format": "short video",
+    "engagement": "high",
+    "hashtags": [
+      "#adcopy",
+      "#growthmarketing",
+      "#digitalads"
+    ],
+    "url": "https://tiktok.com/@growthlab/video/700005"
+  },
+  {
+    "platform": "Twitter",
+    "niche": "marketing",
+    "caption": "Framework: Pain point → proof → CTA. Still the highest-converting copy pattern.",
+    "hook": "Copywriting formula that still wins",
+    "format": "thread",
+    "engagement": "medium",
+    "hashtags": [
+      "#copywriting",
+      "#conversion",
+      "#marketingstrategy"
+    ],
+    "url": "https://x.com/marketer/status/1900005"
+  },
+  {
+    "platform": "YouTube",
+    "niche": "marketing",
+    "caption": "How to build a weekly content engine from one webinar.",
+    "hook": "Repurpose once, publish 10x",
+    "format": "tutorial",
+    "engagement": "medium",
+    "hashtags": [
+      "#contentrepurposing",
+      "#socialmedia",
+      "#demandgen"
+    ],
+    "url": "https://youtube.com/watch?v=mkt005"
+  }
+]
